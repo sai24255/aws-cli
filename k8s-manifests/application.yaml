@@ -16,3 +16,41 @@ spec:
     automated:
       prune: true
       selfHeal: true
+---
+
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: python-app
+  template:
+    metadata:
+      labels:
+        app: python-app
+    spec:
+      containers:
+      - name: python-app
+        image: <your-docker-image>
+        ports:
+        - containerPort: 5000
+---
+# service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-app
+  namespace: default
+spec:
+  selector:
+    app: python-app   # must match your Deployment labels
+  ports:
+    - protocol: TCP
+      port: 5000        # Service port
+      targetPort: 5000  # Container port (your app runs on 5000)
+      nodePort: 30000   # NodePort (external port on Minikube)
+  type: NodePort
