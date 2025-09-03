@@ -23,12 +23,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: python-app-service
+  name: python-app
+  namespace: default
 spec:
   selector:
-    app: python-app
+    app: python-app   # must match your Deployment labels
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 5000
+    - protocol: TCP
+      port: 5000        # Service port
+      targetPort: 5000  # Container port (your app runs on 5000)
+      nodePort: 30000   # NodePort (external port on Minikube)
   type: NodePort
